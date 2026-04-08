@@ -1,6 +1,6 @@
 {
   "name": "beehive-cli",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Local-first parallel AI agent swarm runner, built on pi-agent",
   "type": "module",
   "bin": {
