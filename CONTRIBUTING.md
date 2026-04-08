@@ -4,18 +4,18 @@ Thanks for your interest in contributing. BeeHive is in public beta (v0.5.0) and
 
 ## Ways to contribute
 
-- **Bug reports** — open a [GitHub Issue](https://github.com/mahaddev-x/Be/issues/new?template=bug_report.md)
-- **Feature requests** — open a [GitHub Discussion](https://github.com/mahaddev-x/Be/discussions/new?category=ideas)
+- **Bug reports** — open a [GitHub Issue](https://github.com/mahaddev-x/beehive/issues/new?template=bug_report.md)
+- **Feature requests** — open a [GitHub Discussion](https://github.com/mahaddev-x/beehive/discussions/new?category=ideas)
 - **Pull requests** — see workflow below
-- **New Bees** — share useful `.yaml` bee definitions in [Show & Tell](https://github.com/mahaddev-x/Be/discussions/categories/show-and-tell)
+- **New Bees** — share useful `.yaml` bee definitions in [Show & Tell](https://github.com/mahaddev-x/beehive/discussions/categories/show-and-tell)
 
 ## Development setup
 
 Requirements: Node.js 20+, npm
 
 ```bash
-git clone https://github.com/mahaddev-x/Be.git
-cd Be
+git clone https://github.com/mahaddev-x/beehive.git
+cd beehive
 npm install
 npm link             # registers `beehive` command globally from source
 beehive --version    # should print 0.5.0
@@ -50,4 +50,4 @@ chore: bump version to 0.5.1
 
 ## Questions?
 
-Open a [Discussion](https://github.com/mahaddev-x/Be/discussions) — happy to help.
+Open a [Discussion](https://github.com/mahaddev-x/beehive/discussions) — happy to help.

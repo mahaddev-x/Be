@@ -40,7 +40,7 @@ export const fetchUrlTool: AgentTool = {
     const response = await fetch(url, {
       headers: {
         "User-Agent":
-          "Mozilla/5.0 (compatible; BeeHive/2.0; +https://github.com/mahaddev-x/Be)",
+          "Mozilla/5.0 (compatible; BeeHive/2.0; +https://github.com/mahaddev-x/beehive)",
         Accept: "text/html,application/xhtml+xml,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.5",
       },

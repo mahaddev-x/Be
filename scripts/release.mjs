@@ -81,5 +81,5 @@ console.log(`
     - Creating a GitHub Release with the archives
     - Publishing beehive-cli@${newVersion} to npm
 
-  Watch the build: https://github.com/mahaddev-x/Be/actions
+  Watch the build: https://github.com/mahaddev-x/beehive/actions
 `);

@@ -2,7 +2,7 @@
 
 > **Public Beta — v0.5.0**
 > Core features are stable. We're looking for early collaborators and testers before 1.0.
-> [Report bugs](https://github.com/mahaddev-x/Be/issues) · [Join the discussion](https://github.com/mahaddev-x/Be/discussions) · [Contribute](CONTRIBUTING.md)
+> [Report bugs](https://github.com/mahaddev-x/beehive/issues) · [Join the discussion](https://github.com/mahaddev-x/beehive/discussions) · [Contribute](CONTRIBUTING.md)
 
 **Run hundreds of independent AI tasks in true parallel.**
 
@@ -49,7 +49,7 @@ beehive setup
 
 ### Option B — Download binary (no Node.js required)
 
-Download the pre-built binary for your platform from the [Releases](https://github.com/mahaddev-x/Be/releases) page:
+Download the pre-built binary for your platform from the [Releases](https://github.com/mahaddev-x/beehive/releases) page:
 
 | Platform | File |
 |---|---|
@@ -291,13 +291,13 @@ max_retries     = 3
 
 We welcome contributors! Please read [CONTRIBUTING.md](CONTRIBUTING.md) first.
 
-- **Bug reports** → [GitHub Issues](https://github.com/mahaddev-x/Be/issues)
-- **Feature requests** → [GitHub Discussions](https://github.com/mahaddev-x/Be/discussions)
+- **Bug reports** → [GitHub Issues](https://github.com/mahaddev-x/beehive/issues)
+- **Feature requests** → [GitHub Discussions](https://github.com/mahaddev-x/beehive/discussions)
 - **Pull requests** → fork, branch, PR against `main`
 
 ```bash
-git clone https://github.com/mahaddev-x/Be.git
-cd Be
+git clone https://github.com/mahaddev-x/beehive.git
+cd beehive
 npm install
 npm run dev          # run from source (tsx, no build needed)
 npm run build        # compile to dist/
