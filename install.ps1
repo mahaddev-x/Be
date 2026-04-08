@@ -6,6 +6,15 @@ $ErrorActionPreference = "Stop"
 
 $Repo    = "mahaddev-x/beehive"
 $BinDir  = "$env:USERPROFILE\.beehive\bin"
+$BeesDir = "$env:USERPROFILE\.beehive\bees"
+
+$BuiltInBees = @(
+    "sentiment-scorer.yaml",
+    "text-classifier.yaml",
+    "data-extractor.yaml",
+    "url-scraper.yaml",
+    "file-reviewer.yaml"
+)
 
 Write-Host ""
 Write-Host "  Installing BeeHive..." -ForegroundColor Cyan
@@ -18,7 +27,7 @@ try {
     exit 1
 }
 
-$Version  = $Release.tag_name          # e.g. v0.5.0
+$Version  = $Release.tag_name
 $FileName = "beehive-$Version-bun-windows-x64.zip"
 $Asset    = $Release.assets | Where-Object { $_.name -eq $FileName } | Select-Object -First 1
 
@@ -29,16 +38,24 @@ if (-not $Asset) {
 
 Write-Host "  Downloading BeeHive $Version..." -ForegroundColor Cyan
 
-# Create install dir
-New-Item -ItemType Directory -Force -Path $BinDir | Out-Null
+# Create dirs
+New-Item -ItemType Directory -Force -Path $BinDir  | Out-Null
+New-Item -ItemType Directory -Force -Path $BeesDir | Out-Null
 
-# Download zip
+# Download and extract binary
 $ZipPath = "$env:TEMP\beehive-install.zip"
 Invoke-WebRequest $Asset.browser_download_url -OutFile $ZipPath -UseBasicParsing
-
-# Extract — zip contains beehive.exe at root
 Expand-Archive -Path $ZipPath -DestinationPath $BinDir -Force
 Remove-Item $ZipPath
+
+# Download built-in bees (skip if already present)
+$BaseUrl = "https://raw.githubusercontent.com/$Repo/main/bees"
+foreach ($Bee in $BuiltInBees) {
+    $Dest = "$BeesDir\$Bee"
+    if (-not (Test-Path $Dest)) {
+        Invoke-WebRequest "$BaseUrl/$Bee" -OutFile $Dest -UseBasicParsing
+    }
+}
 
 # Add BinDir to user PATH permanently (if not already there)
 $UserPath = [System.Environment]::GetEnvironmentVariable("PATH", "User")

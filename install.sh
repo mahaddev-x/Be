@@ -6,6 +6,15 @@ set -euo pipefail
 
 REPO="mahaddev-x/beehive"
 BIN_DIR="$HOME/.beehive/bin"
+BEES_DIR="$HOME/.beehive/bees"
+
+BUILT_IN_BEES=(
+  "sentiment-scorer.yaml"
+  "text-classifier.yaml"
+  "data-extractor.yaml"
+  "url-scraper.yaml"
+  "file-reviewer.yaml"
+)
 
 # ── Detect platform ────────────────────────────────────────────────────────────
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
@@ -42,8 +51,8 @@ URL="https://github.com/$REPO/releases/download/$VERSION/$FILE"
 
 echo "  Downloading BeeHive $VERSION..."
 
-# ── Download & extract ─────────────────────────────────────────────────────────
-mkdir -p "$BIN_DIR"
+# ── Download & extract binary ──────────────────────────────────────────────────
+mkdir -p "$BIN_DIR" "$BEES_DIR"
 TMP=$(mktemp -d)
 
 curl -fsSL "$URL" -o "$TMP/$FILE"
@@ -51,6 +60,15 @@ tar -xzf "$TMP/$FILE" -C "$TMP"
 mv "$TMP/beehive/beehive" "$BIN_DIR/beehive"
 chmod +x "$BIN_DIR/beehive"
 rm -rf "$TMP"
+
+# ── Download built-in bees (skip if already present) ──────────────────────────
+BASE_URL="https://raw.githubusercontent.com/$REPO/main/bees"
+for BEE in "${BUILT_IN_BEES[@]}"; do
+  DEST="$BEES_DIR/$BEE"
+  if [ ! -f "$DEST" ]; then
+    curl -fsSL "$BASE_URL/$BEE" -o "$DEST"
+  fi
+done
 
 # ── Add to PATH ────────────────────────────────────────────────────────────────
 PATH_LINE='export PATH="$HOME/.beehive/bin:$PATH"'
@@ -70,8 +88,8 @@ export PATH="$BIN_DIR:$PATH"
 
 # ── Done ───────────────────────────────────────────────────────────────────────
 echo ""
-echo "  BeeHive $VERSION installed to $BIN_DIR"
+echo "  BeeHive $VERSION installed!"
 echo ""
-echo "  Restart your terminal, then run:"
+echo "  Run:"
 echo "    beehive setup"
 echo ""
