@@ -1,0 +1,216 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g. v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Linux x86_64
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+            name: be-linux-x86_64
+            cross: false
+
+          # Linux x86 (32-bit)
+          - target: i686-unknown-linux-gnu
+            os: ubuntu-latest
+            name: be-linux-x86
+            cross: true
+
+          # Linux ARM64
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-latest
+            name: be-linux-arm64
+            cross: true
+
+          # Linux ARMv7
+          - target: armv7-unknown-linux-gnueabihf
+            os: ubuntu-latest
+            name: be-linux-armv7
+            cross: true
+
+          # Linux RISC-V 64
+          - target: riscv64gc-unknown-linux-gnu
+            os: ubuntu-latest
+            name: be-linux-riscv64
+            cross: true
+
+          # Windows x86_64
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+            name: be-windows-x86_64
+            cross: false
+
+          # Windows x86 (32-bit)
+          - target: i686-pc-windows-msvc
+            os: windows-latest
+            name: be-windows-x86
+            cross: false
+
+          # Windows ARM64
+          - target: aarch64-pc-windows-msvc
+            os: windows-latest
+            name: be-windows-arm64
+            cross: false
+
+          # macOS x86_64 (Intel)
+          - target: x86_64-apple-darwin
+            os: macos-13
+            name: be-macos-x86_64
+            cross: false
+
+          # macOS ARM64 (Apple Silicon)
+          - target: aarch64-apple-darwin
+            os: macos-latest
+            name: be-macos-arm64
+            cross: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Cache Cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-${{ matrix.target }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.target }}-cargo-
+
+      - name: Install cross
+        if: matrix.cross
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cross
+
+      - name: Build (cross)
+        if: matrix.cross
+        run: cross build --release --target ${{ matrix.target }} --bin be
+
+      - name: Build (cargo)
+        if: ${{ !matrix.cross }}
+        run: cargo build --release --target ${{ matrix.target }} --bin be
+
+      - name: Strip binary (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: |
+          BIN="target/${{ matrix.target }}/release/be"
+          strip "$BIN" || true
+
+      - name: Package (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: |
+          BIN="target/${{ matrix.target }}/release/be"
+          ARCHIVE="${{ matrix.name }}.tar.gz"
+          tar czf "$ARCHIVE" -C "$(dirname $BIN)" "$(basename $BIN)"
+          echo "ASSET=$ARCHIVE" >> $GITHUB_ENV
+
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $bin = "target\${{ matrix.target }}\release\be.exe"
+          $archive = "${{ matrix.name }}.zip"
+          Compress-Archive -Path $bin -DestinationPath $archive
+          echo "ASSET=$archive" >> $env:GITHUB_ENV
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}
+          path: ${{ env.ASSET }}
+          if-no-files-found: error
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: List artifacts
+        run: ls -lh artifacts/
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name != 'main' && github.ref_name || inputs.version }}
+          name: Be ${{ github.ref_name != 'main' && github.ref_name || inputs.version }}
+          files: artifacts/*
+          generate_release_notes: true
+          body: |
+            ## Be ${{ github.ref_name != 'main' && github.ref_name || inputs.version }} — Local-first Parallel AI Task Runner
+
+            Run hundreds of independent AI tasks in true parallel. Each task (Bee) is stateless, single-purpose, and returns validated JSON.
+
+            ### Install
+
+            **Linux / macOS**
+            ```bash
+            # Linux x86_64 example — swap the filename for your platform
+            curl -L https://github.com/mahaddev-x/Be/releases/download/${{ github.ref_name != 'main' && github.ref_name || inputs.version }}/be-linux-x86_64.tar.gz | tar xz
+            chmod +x be
+            sudo mv be /usr/local/bin/
+            be setup
+            ```
+
+            **Windows**
+            Download `be-windows-x86_64.zip`, extract, add the folder to your `PATH`, then run `be setup`.
+
+            ### Available binaries
+
+            | Platform | Architecture | File |
+            |---|---|---|
+            | Linux | x86_64 | `be-linux-x86_64.tar.gz` |
+            | Linux | x86 (32-bit) | `be-linux-x86.tar.gz` |
+            | Linux | ARM64 | `be-linux-arm64.tar.gz` |
+            | Linux | ARMv7 | `be-linux-armv7.tar.gz` |
+            | Linux | RISC-V 64 | `be-linux-riscv64.tar.gz` |
+            | Windows | x86_64 | `be-windows-x86_64.zip` |
+            | Windows | x86 (32-bit) | `be-windows-x86.zip` |
+            | Windows | ARM64 | `be-windows-arm64.zip` |
+            | macOS | x86_64 (Intel) | `be-macos-x86_64.tar.gz` |
+            | macOS | ARM64 (Apple Silicon) | `be-macos-arm64.tar.gz` |
+
+            ### Quick start
+            ```bash
+            be setup                        # configure your API keys
+            be bee list                     # see built-in bees
+            be bee test url-scraper --input '{"url":"https://example.com"}'
+            be run url-scraper --input urls.csv --parallel 100
+            ```
+
+            ### Supported LLM providers
+            `groq` · `ollama` · `openrouter` · `together` · `deepseek` · `openai` · `anthropic` · `google`
