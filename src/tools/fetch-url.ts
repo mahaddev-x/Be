@@ -8,7 +8,7 @@
  * - Turndown converts the clean article HTML to Markdown (token-efficient vs raw HTML)
  * - Hard truncation at MAX_CHARS as a last resort safety net
  */
-import { JSDOM } from "jsdom";
+import { parseHTML } from "linkedom";
 import { Readability } from "@mozilla/readability";
 import TurndownService from "turndown";
 import { Type } from "@mariozechner/pi-ai";
@@ -92,12 +92,11 @@ export const fetchUrlTool: AgentTool = {
 };
 
 function htmlToMarkdown(html: string, url: string): string {
-  // Parse with JSDOM
-  const dom = new JSDOM(html, { url });
-  const document = dom.window.document;
+  // Parse with linkedom (Bun-compatible, no Worker threads)
+  const { document } = parseHTML(html);
 
   // Try Mozilla Readability first — extracts the main article content
-  const reader = new Readability(document);
+  const reader = new Readability(document as unknown as Document);
   const article = reader.parse();
 
   if (article?.content && article.content.length > 200) {
@@ -108,6 +107,6 @@ function htmlToMarkdown(html: string, url: string): string {
   }
 
   // Readability failed (no clear article) — convert the whole body
-  const body = document.body?.innerHTML ?? html;
+  const body = (document.body as any)?.innerHTML ?? html;
   return turndown.turndown(body);
 }
