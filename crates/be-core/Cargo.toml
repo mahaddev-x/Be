@@ -1,0 +1,22 @@
+[package]
+name = "be-core"
+version = "1.0.0"
+edition = "2021"
+description = "Be engine library — parallel AI task runner"
+license = "MIT"
+
+[dependencies]
+tokio        = { version = "1", features = ["full"] }
+reqwest      = { version = "0.12", features = ["json", "stream"] }
+serde        = { version = "1", features = ["derive"] }
+serde_json   = "1"
+serde_yaml   = "0.9"
+anyhow       = "1"
+thiserror    = "1"
+uuid         = { version = "1", features = ["v4"] }
+chrono       = { version = "0.4", features = ["serde"] }
+async-trait  = "0.1"
+dirs         = "5"
+tokio-util   = "0.7"
+scraper      = "0.19"
+toml         = "0.8"

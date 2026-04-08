@@ -1,0 +1,27 @@
+[package]
+name = "be-cli"
+version = "1.0.0"
+edition = "2021"
+description = "Be CLI — parallel AI task runner"
+license = "MIT"
+
+[[bin]]
+name = "be"
+path = "src/main.rs"
+
+[dependencies]
+be-core      = { path = "../be-core" }
+clap         = { version = "4", features = ["derive"] }
+ratatui      = "0.27"
+crossterm    = "0.27"
+indicatif    = "0.17"
+dialoguer    = "0.11"
+comfy-table  = "7"
+colored      = "2"
+tokio        = { version = "1", features = ["full"] }
+anyhow       = "1"
+serde_json   = "1"
+serde        = { version = "1", features = ["derive"] }
+csv          = "1"
+reqwest      = { version = "0.12", features = ["json"] }
+dirs         = "5"

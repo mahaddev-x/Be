@@ -1,0 +1,43 @@
+name: sentiment-scorer
+version: "1.0"
+description: "Returns sentiment score, emotions, and tone summary"
+
+model: ollama/qwen2.5:3b
+
+temperature: 0.0
+max_tokens: 256
+timeout_seconds: 30
+max_parallel: 100
+
+system_prompt: |
+  You are a sentiment analysis engine. Given text, analyze the sentiment,
+  emotions, and tone. Return ONLY a valid JSON object.
+  No explanation. No markdown. No text outside the JSON object.
+
+user_prompt_template: |
+  Analyze the sentiment of this text:
+
+  {{text}}
+
+  Return JSON only with these fields:
+  - sentiment: string (must be exactly "positive", "negative", or "neutral")
+  - score: number between -1.0 (most negative) and 1.0 (most positive)
+  - emotions: array of strings describing detected emotions (e.g. ["joy", "surprise"])
+  - tone_summary: string briefly describing the overall tone
+
+input_vars:
+  - name: text
+    type: string
+    required: true
+
+output_schema:
+  sentiment: string
+  score: number
+  emotions: array
+  tone_summary: string
+
+tools: []
+
+retry:
+  max_attempts: 3
+  backoff_seconds: 2

@@ -1,0 +1,46 @@
+name: url-scraper
+version: "1.0"
+description: "Fetches a URL and extracts structured content data"
+
+model: groq/llama-3.1-8b-instant
+
+temperature: 0.1
+max_tokens: 512
+timeout_seconds: 30
+max_parallel: 200
+
+system_prompt: |
+  You are a precise content extractor. Given web page content,
+  return ONLY a valid JSON object matching the output schema exactly.
+  No explanation. No markdown. No text outside the JSON object.
+
+user_prompt_template: |
+  Extract structured data from this web page.
+
+  URL: {{url}}
+  Content: {{content}}
+
+  Return JSON only with these fields: title, description, main_topic, key_points (array), word_count (integer), language (2-letter code).
+
+input_vars:
+  - name: url
+    type: string
+    required: true
+  - name: content
+    type: string
+    required: false
+
+output_schema:
+  title: string
+  description: string
+  main_topic: string
+  key_points: array
+  word_count: integer
+  language: string
+
+tools:
+  - fetch_url
+
+retry:
+  max_attempts: 3
+  backoff_seconds: 2
