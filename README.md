@@ -2,7 +2,7 @@
 
 > **Public Beta — v0.5.0**
 > Core features are stable. We're looking for early collaborators and testers before 1.0.
-> [Report bugs](https://github.com/mahaddev-x/beehive/issues) · [Join the discussion](https://github.com/mahaddev-x/beehive/discussions) · [Contribute](CONTRIBUTING.md)
+> [Report bugs](https://github.com/mahaddev-x/beehive/issues) · [Join the discussion](https://github.com/mahaddev-x/beehive/discussions) · [Contribute](docs/contributing.md)
 
 **Run hundreds of independent AI tasks in true parallel.**
 
@@ -289,7 +289,7 @@ max_retries     = 3
 
 ## Contributing
 
-We welcome contributors! Please read [CONTRIBUTING.md](CONTRIBUTING.md) first.
+We welcome contributors! Please read [CONTRIBUTING.md](docs/contributing.md) first.
 
 - **Bug reports** → [GitHub Issues](https://github.com/mahaddev-x/beehive/issues)
 - **Feature requests** → [GitHub Discussions](https://github.com/mahaddev-x/beehive/discussions)
