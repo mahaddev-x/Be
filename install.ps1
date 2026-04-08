@@ -1,6 +1,6 @@
 #!/usr/bin/env pwsh
 # BeeHive installer for Windows
-# Usage: irm https://raw.githubusercontent.com/mahaddev-x/beehive/main/install.ps1 | iex
+# Usage: irm https://mahaddev-x.github.io/beehive/install.ps1 | iex
 
 $ErrorActionPreference = "Stop"
 

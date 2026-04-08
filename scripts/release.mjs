@@ -81,5 +81,6 @@ console.log(`
     - Creating a GitHub Release with the archives
     - Publishing beehive-cli@${newVersion} to npm
 
+  Install: irm https://mahaddev-x.github.io/beehive/install.ps1 | iex
   Watch the build: https://github.com/mahaddev-x/beehive/actions
 `);

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # BeeHive installer for macOS and Linux
-# Usage: curl -fsSL https://raw.githubusercontent.com/mahaddev-x/beehive/main/install.sh | bash
+# Usage: curl -fsSL https://mahaddev-x.github.io/beehive/install.sh | bash
 
 set -euo pipefail
 

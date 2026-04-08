@@ -51,12 +51,12 @@ beehive setup
 
 **Windows** — paste in PowerShell:
 ```powershell
-irm https://raw.githubusercontent.com/mahaddev-x/beehive/main/install.ps1 | iex
+irm https://mahaddev-x.github.io/beehive/install.ps1 | iex
 ```
 
 **macOS / Linux** — paste in your terminal:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/mahaddev-x/beehive/main/install.sh | bash
+curl -fsSL https://mahaddev-x.github.io/beehive/install.sh | bash
 ```
 
 Both scripts automatically download the right binary for your platform, install it to `~/.beehive/bin/`, and add it to your PATH. Restart your terminal and run `beehive setup`.
